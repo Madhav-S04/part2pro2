@@ -1,26 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
 
 const App = () => {
-  // Hardcoded dummy data for the phonebook
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]);
-
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Handle form submission to add a new person with a number
+  // Fetch initial data from server using useEffect
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  // Handle form submission to add a new person
   const addPerson = (event) => {
     event.preventDefault();
 
-    if (persons.some((person) => person.name === newName)) {
+    if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already added to the phonebook!`);
       return;
     }
@@ -28,12 +31,16 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
+      id: persons.length + 1
     };
 
-    setPersons([...persons, newPerson]);
-    setNewName('');
-    setNewNumber('');
+    axios.post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons([...persons, response.data]);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => console.error('Error adding person:', error));
   };
 
   // Handle search input changes
@@ -42,7 +49,7 @@ const App = () => {
   };
 
   // Filter the persons list based on search term (case-insensitive)
-  const filteredPersons = persons.filter((person) =>
+  const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
