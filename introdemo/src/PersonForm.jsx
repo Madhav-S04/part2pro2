@@ -1,10 +1,17 @@
-const Filter = ({ searchTerm, onSearchChange }) => {
-    return (
+const PersonForm = ({ newName, newNumber, onNameChange, onNumberChange, onSubmit }) => {
+  return (
+    <form onSubmit={onSubmit}>
       <div>
-        search: <input value={searchTerm} onChange={onSearchChange} />
+        name: <input value={newName} onChange={onNameChange} />
       </div>
-    );
-  };
-  
-  export default Filter;
-  
+      <div>
+        number: <input value={newNumber} onChange={onNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
+export default PersonForm;

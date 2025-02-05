@@ -16,29 +16,32 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Handle the form submission for adding a person
+  // Handle form submission to add a new person with a number
   const addPerson = (event) => {
     event.preventDefault();
 
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook!`);
+      alert(`${newName} is already added to the phonebook!`);
       return;
     }
 
-    setPersons([
-      ...persons,
-      { name: newName, number: newNumber, id: persons.length + 1 }
-    ]);
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1,
+    };
+
+    setPersons([...persons, newPerson]);
     setNewName('');
     setNewNumber('');
   };
 
-  // Handle the search input change
+  // Handle search input changes
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Filter the persons list based on the search term (case-insensitive)
+  // Filter the persons list based on search term (case-insensitive)
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -47,12 +50,12 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      {/* Filter component */}
+      {/* Search filter component */}
       <Filter searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
       <h3>Add a new</h3>
 
-      {/* PersonForm component */}
+      {/* Form to add new name and number */}
       <PersonForm
         newName={newName}
         newNumber={newNumber}
@@ -63,7 +66,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      {/* Persons component */}
+      {/* Display filtered persons */}
       <Persons filteredPersons={filteredPersons} />
     </div>
   );
