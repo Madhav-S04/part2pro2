@@ -15,6 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [numberFilter, setNumberFilter] = useState('');
 
   // Handle form submission to add a new person with a number
   const addPerson = (event) => {
@@ -36,22 +37,32 @@ const App = () => {
     setNewNumber('');
   };
 
-  // Handle search input changes
+  // Handle search input changes for name filter
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  // Handle search input changes for number filter
+  const handleNumberFilterChange = (event) => {
+    setNumberFilter(event.target.value);
+  };
+
   // Filter the persons list based on search term (case-insensitive)
-  const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPersons = persons.filter((person) => {
+    const nameMatch = person.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const numberMatch = person.number.toLowerCase().includes(numberFilter.toLowerCase());
+    return nameMatch && numberMatch;
+  });
 
   return (
     <div>
       <h2>Phonebook</h2>
 
-      {/* Search filter component */}
-      <Filter searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+      {/* Search filter for name */}
+      <Filter searchTerm={searchTerm} onSearchChange={handleSearchChange} placeholder="Search by name" />
+
+      {/* Search filter for number */}
+      <Filter searchTerm={numberFilter} onSearchChange={handleNumberFilterChange} placeholder="Search by number" />
 
       <h3>Add a new</h3>
 
